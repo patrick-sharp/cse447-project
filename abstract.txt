@@ -1,0 +1,24 @@
+Dataset
+
+Our dataset will include texts in all the official languages of 
+countries who have sent astronauts to the ISS as well as Mandarin
+and Cantonese. We believe that this makes sense for the project prompt 
+because all of these countries are the ones most likely to have a space 
+presence in the year 2041.
+
+Our actual dataset will be composed of Wikipedia articles. Wikipedia 
+has large volumes of text available for all of the languages listed
+above. Wikipedia is also a good fit for the problem's prompt because
+the tone of wikipedia is dispassionate and informative, which seems
+like a good fit for the kind of communication an astronaut would use.
+
+Method
+Our model itself will be based on transformers and written in pytorch.
+This project is similar to many autocomplete programs in that it tries
+to predict what the user will type next. There are many online examples
+of autocomplete programs using transformers.
+The website Talk to Transformer (https://app.inferkit.com/demo) shows
+the predictive power of transformer models for generating text
+that is in accordance with previously typed words. While that website
+predicts sentences and our project predicts characters, the principle
+is similar (and our problem is not nearly so complicated).

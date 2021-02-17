@@ -2,15 +2,16 @@ import string
 import random
 import os
 
+import torch
+
 from Model import Model
 
 class ModelRunner:
     """
     This is our project's main class.
     """
-
-    def __init__(self):
-        self.model = Model()
+    def __init__(self, model=Model()):
+        self.model = model
 
     @classmethod
     def load_training_data(cls):
@@ -39,14 +40,6 @@ class ModelRunner:
         pass
 
     def run_pred(self, data):
-        # your code here
-        # preds = []
-        # all_chars = string.ascii_letters
-        # for inp in data:
-        #     # this model just predicts a random character each time
-        #     top_guesses = [random.choice(all_chars) for _ in range(3)]
-        #     preds.append(''.join(top_guesses))
-        # return preds
         preds = []
         for inp in data:
             # this model just predicts a random character each time
@@ -58,13 +51,19 @@ class ModelRunner:
     def save(self, work_dir):
         # your code here
         # this particular model has nothing to save, but for demonstration purposes we will save a blank file
-        with open(os.path.join(work_dir, 'model.checkpoint'), 'wt') as f:
-            f.write('dummy save')
+        with open(os.path.join(work_dir, 'model.checkpoint.pt'), 'wb') as f:
+            torch.save(self.model, f)
 
     @classmethod
     def load(cls, work_dir):
         # your code here
         # this particular model has nothing to load, but for demonstration purposes we will load a blank file
-        with open(os.path.join(work_dir, 'model.checkpoint')) as f:
-            dummy_save = f.read()
-        return ModelRunner()
+        try:
+            with open(os.path.join(work_dir, 'model.checkpoint.pt'), 'rb') as f:
+                model = torch.load(f)
+            return ModelRunner(model=model)
+        except:
+            # if there is no saved model, just spin up a fresh one.
+            # Note: this model will be completely untrained.
+            print("No model checkpoint found. New model was initialized from scratch and NOT trained.")
+            return ModelRunner(model=Model())

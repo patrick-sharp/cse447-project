@@ -1,5 +1,0 @@
-wikipedia
-google_trans_new
-
-torch
-numpy

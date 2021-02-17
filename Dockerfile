@@ -4,6 +4,6 @@ WORKDIR /job
 VOLUME ["/job/data", "/job/src", "/job/work", "/job/output"]
 
 # You should install any dependencies you need here.
-# RUN pip install tqdm
 
-RUN pip3 install -r requirements.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt

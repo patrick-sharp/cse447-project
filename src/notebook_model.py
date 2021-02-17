@@ -26,7 +26,8 @@ file_len = len(file)
 ## printing the length of the file
 print('file_len =', file_len)
 
-
+## Initializing the length of chunk
+chunk_len = 200
 ## Function to split the string into chunks
 def random_chunk():
     ## Initializing the starting index value of the big string 

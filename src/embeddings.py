@@ -4,18 +4,18 @@ import random
 import unidecode
 import numpy as np
 
-chunk_len = 200
+CHUNK_LEN = 200
 #This is the length of the pretrained embeddings being used
-embedding_dim = 300
-training_dir = "training/"
-embedding_path = "embeddings.txt"
+EMBEDDING_DIM = 300
+DATA_DIR = "../data" # Where the training data is stored
+EMBEDDINGS_PATH = "./embeddings.txt"
 all_characters = string.printable
 
 
 #Update to random_chunk function to get a random chunk from a random file
 def random_chunk():
     #generates a list of files in the training directory and chooses one randomly
-    fileList = os.listdir(training_dir)
+    fileList = os.listdir(DATA_DIR)
     fileName = fileList[random.randint(0, len(fileList) -1)]
     fileRaw = open(training_dir + fileName, 'r')
     
@@ -32,7 +32,7 @@ def random_chunk():
 #Matrix has random embeddings if the given file didn't have an embedding for a charater
 def get_embeddings():
     embeddings = {}
-    file = open(embedding_path, 'r')
+    file = open(EMBEDDINGS_PATH, 'r')
     for line in file:
         raw = line.strip().split()
         #First value in the line is the character name the rest are float values
@@ -42,7 +42,7 @@ def get_embeddings():
         embeddings[char] = embedValues
 
     #Empty matrix going to be ordered by string.printable
-    orderedWeights = np.zeros((len(all_characters), embedding_dim))
+    orderedWeights = np.zeros((len(all_characters), EMBEDDING_DIM))
     
     for i, char in enumerate(all_characters):
         try:

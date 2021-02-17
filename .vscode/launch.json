@@ -18,7 +18,7 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceRoot}/src/main.py",
-      "args": ["train", "--work_dir", "work", "--test_data", "${workspaceRoot}/example/input.txt", "--test_output", "${workspaceRoot}/output/pred.txt"],
+      "args": ["train", "--work_dir", "work"],
       "cwd": "${workspaceRoot}",
       "console": "integratedTerminal"
     }

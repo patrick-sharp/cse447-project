@@ -57,16 +57,16 @@ def get_embeddings():
 
 
 def __init__(self, input_size, hidden_size, output_size, n_layers=1):
-        super(RNN, self).__init__()
-        self.input_size = input_size
-        self.hidden_size = hidden_size
-        self.output_size = output_size
-        self.n_layers = n_layers
-        self.encoder = nn.Embedding(input_size, hidden_size)
-        #only new line basically just need to upload the pretrained embeddings into our encoder
-        self.encoder.load_state_dict({'weight': get_embeddings()})
-        self.gru = nn.GRU(hidden_size, hidden_size, n_layers)
-        self.decoder = nn.Linear(hidden_size, output_size)
+    super(RNN, self).__init__()
+    self.input_size = input_size
+    self.hidden_size = hidden_size
+    self.output_size = output_size
+    self.n_layers = n_layers
+    self.encoder = nn.Embedding(input_size, hidden_size)
+    #only new line basically just need to upload the pretrained embeddings into our encoder
+    self.encoder.load_state_dict({'weight': get_embeddings()})
+    self.gru = nn.GRU(hidden_size, hidden_size, n_layers)
+    self.decoder = nn.Linear(hidden_size, output_size)
         
 
 

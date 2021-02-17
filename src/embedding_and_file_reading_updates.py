@@ -53,8 +53,6 @@ def get_embeddings():
             orderedWeights[i] = np.random.normal(scale=0.6, size=embedding_dim)
 
     return orderedWeights
-        
-
 
 def __init__(self, input_size, hidden_size, output_size, n_layers=1):
     super(RNN, self).__init__()

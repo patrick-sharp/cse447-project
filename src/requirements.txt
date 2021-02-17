@@ -1,6 +1,2 @@
 wikipedia
 google_trans_new
-
-numpy
-pandas
-torch

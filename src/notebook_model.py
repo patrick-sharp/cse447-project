@@ -2,41 +2,16 @@
 # .py version of the notebook found here:
 # https://www.kaggle.com/abhi8923shriv/rnn-gru-for-txt-prediction-character-level
 
-# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
-# For example, here's several helpful packages to load
-
 import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-
-# Input data files are available in the read-only "../input/" directory
-# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
 
 import os
 for dirname, _, filenames in os.walk('/kaggle/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
 
-# You can write up to 5GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using "Save & Run All" 
-# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
-
-# Generate text which is similar to the writing style of William Shakespeare
-
-#  link to understand problem statement https://blog.owulveryck.info/2017/10/29/about-recurrent-neural-network-shakespeare-and-go.html
-
-# The dataset used in this experiment has partial content of different plays of Shakespeare concatenated into a single plain text file.
-# Shakespeare is a famous English poet , play writer and actor. He is regarded as the greatest writer in the English language and the world's greatest dramatist. He is often called a England's national poet and the Bard of Avon.
-
-# We have chosen plays of Shakespeare as our dataset mainly for two reasons :
-
-# His work is widely recognized as standard for poetry and language.
-# The result of combining of his work provides a sizeable corpus for our model to learn.
-
-## Importing required packages
-
 import unidecode
 import string
 import random
-import re
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -51,16 +26,7 @@ file_len = len(file)
 ## printing the length of the file
 print('file_len =', file_len)
 
-# The variable 'file' is a string with 1115393 characters. This is the raw content of the Shakespeare text file (dataset file), including many details like white spaces, line breaks etc.
 
-# Now to get the sense of the data we print first 1000 characters in the string:
-
-file[:1000]
-
-# As the string is large, we will split it into chunks to provide inputs to the RNN using the function random_chunk()
-
-## Initializing the length of chunk
-chunk_len = 200
 ## Function to split the string into chunks
 def random_chunk():
     ## Initializing the starting index value of the big string 
@@ -71,15 +37,6 @@ def random_chunk():
     return file[start_index:end_index]
 
 print((random_chunk()))
-
-# Building the Model
-# This model will take input as the character for step  t−1 , and is expected to give the output  t , which is the next character. There are three layers:
-
-# Linear layer that encodes the input character into an internal state
-# GRU layer (which may itself have multiple layers) that operates on that internal and hidden state
-# Decoder layer that outputs the probability distribution
-
-### Creating recurrent neural network
 
 ### Creating recurrent neural network
 class RNN(nn.Module):
@@ -102,20 +59,6 @@ class RNN(nn.Module):
 
     def init_hidden(self):
         return Variable(torch.zeros(self.n_layers, 1, self.hidden_size))
-
-# Defining the Helper Functions
-# Let us define some helper functions to:
-# A helper function is a function that performs part of the computation of another function. Helper functions are used to make your programs easier to read by giving descriptive names to computations. They also let you reuse computations, just as with functions in general.
-# A "helper function" is a function you write because you need that particular functionality in multiple places, and because it makes the code more readable. A good example is an average function. You'd write a function named avg or similar, that takes in a list of numbers, and returns the average value from that list.
-# You can then use that function in your main function, or in other, more complex helper functions, wherever you need it. Basically any block of code that you use multiple times would be a good candidate to be made into a helper function.
-# Another reason for helper functions is to make the code easier to read. For instance, I might be able to write a really clever line of code to take the average of a list of numbers, and it only takes a single line, but it's complicated and hard to read. I could make a helper function and replace my complicated line with one that's much easier to read.
-
-
-
-# Convert the input string chunks into the character tensors
-# Each chunk will be turned into a tensor, specifically a LongTensor (used for integer values), by looping through the characters of the string and looking up the index of each character in all_characters.
-
-
 
 # Turn string into list of longs
 def char_tensor(string):
@@ -216,34 +159,3 @@ for epoch in range(1, n_epochs + 1):
     if epoch % plot_every == 0:
         all_losses.append(loss_avg / plot_every)
         loss_avg = 0
-
-#  Plotting the historical loss from all_losses shows the network learning:
-
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-
-%matplotlib inline
-
-plt.figure()
-plt.plot(all_losses)
-plt.xlabel("epoch")
-plt.ylabel("loss")
-
-# Adapting or Tuning for Text Generation
-
-# In the evaluate function above, every time a prediction is made, the outputs are divided by the "temperature" argument passed. Using a higher number makes all actions more equally likely, and thus gives us "more random" outputs. Using a lower value (less than 1) makes high probabilities contribute more. As we turn the temperature towards zero we are choosing only the most likely outputs.
-
-# We can see the effects of this by adjusting the temperature argument:
-print(evaluate('u', 200, temperature=0.8))
-
-# Higher temperatures more varied, choosing less probable outputs:
-
-print(evaluate('how', 200, temperature=1.4))
-
-# Higher temperatures more varied, choosing less probable outputs:
-
-print(evaluate('how', 40, temperature=1.9))
-
-# Higher temperatures more varied, choosing less probable outputs:
-
-print(evaluate('how', 49, temperature=10))

@@ -3,7 +3,7 @@ import os
 import random
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
-from gru_model import GruModel
+from ModelRunner import ModelRunner
 
 if __name__ == '__main__':
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
@@ -20,18 +20,18 @@ if __name__ == '__main__':
             print('Making working directory {}'.format(args.work_dir))
             os.makedirs(args.work_dir)
         print('Instatiating model')
-        model = GruModel()
+        model = ModelRunner()
         print('Loading training data')
-        train_data = GruModel.load_training_data()
+        train_data = ModelRunner.load_training_data()
         print('Training')
         model.run_train(train_data, args.work_dir)
         print('Saving model')
         model.save(args.work_dir)
     elif args.mode == 'test':
         print('Loading model')
-        model = GruModel.load(args.work_dir)
+        model = ModelRunner.load(args.work_dir)
         print('Loading test data from {}'.format(args.test_data))
-        test_data = GruModel.load_test_data(args.test_data)
+        test_data = ModelRunner.load_test_data(args.test_data)
         print('Making predictions')
         pred = model.run_pred(test_data)
         print('Writing predictions to {}'.format(args.test_output))

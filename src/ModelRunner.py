@@ -2,10 +2,15 @@ import string
 import random
 import os
 
-class GruModel:
+from Model import Model
+
+class ModelRunner:
     """
     This is our project's main class.
     """
+
+    def __init__(self):
+        self.model = Model()
 
     @classmethod
     def load_training_data(cls):
@@ -35,13 +40,20 @@ class GruModel:
 
     def run_pred(self, data):
         # your code here
+        # preds = []
+        # all_chars = string.ascii_letters
+        # for inp in data:
+        #     # this model just predicts a random character each time
+        #     top_guesses = [random.choice(all_chars) for _ in range(3)]
+        #     preds.append(''.join(top_guesses))
+        # return preds
         preds = []
-        all_chars = string.ascii_letters
         for inp in data:
             # this model just predicts a random character each time
-            top_guesses = [random.choice(all_chars) for _ in range(3)]
+            top_guesses = self.model.predict(inp)
             preds.append(''.join(top_guesses))
         return preds
+        return self.model.predict(data)
 
     def save(self, work_dir):
         # your code here
@@ -55,4 +67,4 @@ class GruModel:
         # this particular model has nothing to load, but for demonstration purposes we will load a blank file
         with open(os.path.join(work_dir, 'model.checkpoint')) as f:
             dummy_save = f.read()
-        return GruModel()
+        return ModelRunner()

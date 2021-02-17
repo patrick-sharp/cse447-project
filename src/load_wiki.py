@@ -1,5 +1,7 @@
-import wikipedia
 import sys
+import os
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+import wikipedia
 from google_trans_new import google_translator
 
 """
@@ -13,10 +15,10 @@ from google_trans_new import google_translator
         * Russian - ru
         * Spanish - es
         * French - fr
-        * Norergian - no
+        * Norwegian - no
         * Dutch - nl
         * Danish - da
-        * Sweedish - sv
+        * Swedish - sv
     Possible articles:
         * space
         * ISS
@@ -33,6 +35,16 @@ topics = ['Mars', 'Moon', 'Moon landing', 'astronaut', 'outer space', 'Interstel
         'galaxy', 'solar system', 'spaceship', 'Milky way galaxy', 'planetary orbit']
 
 translator = google_translator()
+
+parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+parser.add_argument('--data_dir', help='where to save the data', default='../data')
+args = parser.parse_args()
+data_dir = args.data_dir
+
+try:
+    os.mkdir(data_dir)
+except FileExistsError:
+    pass
 
 print("Begin Downloading Articles...")
 # saving article_lang.txt
@@ -52,7 +64,7 @@ for i, lang in enumerate(languages):
             translated_topic = translator.translate(topic, lang_tgt=trans_lang[i])
             #page = wikipedia.page(topic).content
             page = wikipedia.page(translated_topic).content
-            with open(string + "_" + lang + ".txt", 'w') as f:
+            with open(os.path.join(data_dir, string + "_" + lang + ".txt"), 'w') as f:
                 print(wikipedia.page(translated_topic).content, file = f)
             print(f'Successfully downloaded an article on {topic} in {wip2language[lang]}')
         except wikipedia.DisambiguationError:

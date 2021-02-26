@@ -60,9 +60,7 @@ for i, lang in enumerate(languages):
                 string += token
 
         try:
-            #import pdb; pdb.set_trace()
             translated_topic = translator.translate(topic, lang_tgt=trans_lang[i])
-            #page = wikipedia.page(topic).content
             page = wikipedia.page(translated_topic).content
             with open(os.path.join(data_dir, string + "_" + lang + ".txt"), 'w') as f:
                 print(wikipedia.page(translated_topic).content, file = f)

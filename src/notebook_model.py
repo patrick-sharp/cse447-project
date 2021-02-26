@@ -150,7 +150,7 @@ all_losses = []
 loss_avg = 0
 
 for epoch in range(1, n_epochs + 1):
-    loss = train(*random_training_set())       
+    loss = train(random_training_set())       
     loss_avg += loss
 
     if epoch % print_every == 0:

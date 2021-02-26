@@ -17,6 +17,9 @@ python3 src/main.py test --work_dir work --test_data example/input.txt --test_ou
 # submit docker file
 cp Dockerfile submit/Dockerfile
 
+# submit requirements.txt
+cp requirements.txt submit/requirements.txt
+
 # submit source code
 cp -r src submit/src
 

@@ -4,14 +4,14 @@ import random
 import torch
 from torch.autograd import Variable
 
-CHUNK_LEN = 200
+CHUNK_LEN = 400
 DATA_DIR = "../data" # Where the training data is stored
+CURR_DIR = os.path.dirname(os.path.realpath(__file__))
 
-with open('./vocab.txt', 'r') as f:
+with open(os.path.join(CURR_DIR, 'vocab.txt'), 'r') as f:
     vocab = f.read()
 
 def char_tensor(s: str):
-    ## tensor is a array
     tensor = torch.zeros(len(s)).long()
     for c in range(len(s)):
         try:

@@ -59,6 +59,7 @@ test_data = [
     ('one giant leap fo', 'r'),
     ('one giant lea', 'p'),
     ('one giant l', 'e'),
-    ('one gia', 't'),
+    ('one gia', 'n'),
     ('on', 'e'),
 ]
+

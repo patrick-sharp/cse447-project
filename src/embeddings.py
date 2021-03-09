@@ -1,7 +1,7 @@
 import string
 import os
-import unidecode
 import numpy as np
+import torch
 
 # This is the length of the pretrained embeddings being used
 EMBEDDING_DIM = 300
@@ -11,7 +11,7 @@ all_characters = string.printable
 # Gets pretrained character embeddings from the path given at the top of the file
 # Returns a np matrix in the order of string.printable with all the given embeddings
 # Matrix has random embeddings if the given file didn't have an embedding for a charater
-def get_embeddings():
+def get_tensor_embeddings(input_size, hidden_size, vocab):
     embeddings = {}
     file = open(EMBEDDINGS_PATH, 'r')
     for line in file:
@@ -25,17 +25,9 @@ def get_embeddings():
     # Empty matrix going to be ordered by string.printable
     orderedWeights = np.zeros((len(all_characters), EMBEDDING_DIM))
     
-    for i, char in enumerate(all_characters):
-        try:
-            # Uses the given embedding if present
-            orderedWeights[i] = embeddings[char]
-        except KeyError:
-            # Generates a random embedding if not
-            orderedWeights[i] = np.random.normal(scale=0.6, size=embedding_dim)
+    tensor_embeddings = torch.normal(0,1,(input_size, hidden_size))
+    for i, char in enumerate(vocab):
+        if char in embeddings:
+            tensor_embeddings[i] = torch.Tensor(embeddings[char])
 
-    return orderedWeights
-
-
-
-
-
+    return tensor_embeddings

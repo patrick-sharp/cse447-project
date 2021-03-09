@@ -4,10 +4,10 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 from data_handler import CHUNK_LEN, vocab, char_tensor, test_data
+from embeddings import EMBEDDING_DIM, get_tensor_embeddings
 
-HIDDEN_SIZE = 139
+HIDDEN_SIZE = EMBEDDING_DIM
 NUM_LAYERS = 6
-# VOCAB = ' ' + string.ascii_letters
 NUM_CHARACTERS = len(vocab)
 
 class Model(nn.Module):
@@ -17,7 +17,9 @@ class Model(nn.Module):
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.n_layers = n_layers
-        self.encoder = nn.Embedding(input_size, hidden_size)
+        # self.encoder = nn.Embedding(input_size, hidden_size)
+        tensor_embeddings = get_tensor_embeddings(input_size, hidden_size, vocab)
+        self.encoder = nn.Embedding.from_pretrained(tensor_embeddings, freeze=False)
         self.gru = nn.GRU(hidden_size, hidden_size, n_layers)
         self.decoder = nn.Linear(hidden_size, output_size)
     

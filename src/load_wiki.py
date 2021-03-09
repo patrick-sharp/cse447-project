@@ -68,8 +68,6 @@ num_total = 0
 print("Begin Downloading Articles...")
 # saving article_lang.txt
 for i, lang in enumerate(languages):
-    if i < 7:
-        continue
     for topic in topics:
         wikipedia.set_lang(lang)
         string = ""

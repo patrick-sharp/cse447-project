@@ -16,6 +16,7 @@ class ModelRunner:
         for param in model.parameters():
             if not param.is_cuda:
                 print("Model not initialized as cuda")
+                break
         self.model = model
 
     @classmethod

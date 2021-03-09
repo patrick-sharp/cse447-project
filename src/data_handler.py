@@ -54,6 +54,7 @@ class TrainData():
         self.batch_size = batch_size
         inp = []
         file_list = os.listdir(DATA_DIR)
+        non_cuda_tensors = 0
         for filename in tqdm(file_list):
             with open(os.path.join(DATA_DIR, filename), 'r') as f:
                 for line in f:
@@ -62,11 +63,11 @@ class TrainData():
                         continue
                     tensor = char_tensor(line)
                     tensor.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
-                    if tensor.device != 'cuda':
-                        print("Tensor not initialized as cuda")
+                    if not tensor.is_cuda:
+                        non_cuda_tensors += 1
                     inp.append(tensor)
         random.shuffle(inp)
-        print(inp.device)
+        print(f'Non-cuda tensors in dataset: {non_cuda_tensors}')
         self.inp = inp
     def random_training_set(self):
         if self.batch_index + self.batch_size >= len(self.inp):

@@ -52,7 +52,7 @@ class TrainData():
     def __init__(self, batch_size=2000):    
         self.batch_index = 0
         self.batch_size = batch_size
-        inp = []
+        data = []
         file_list = os.listdir(DATA_DIR)
         non_cuda_tensors = 0
         for filename in tqdm(file_list):
@@ -61,20 +61,34 @@ class TrainData():
                     line = line.strip('\n')
                     if len(line) <= 1:
                         continue
-                    tensor = char_tensor(line)
-                    tensor.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
-                    if not tensor.is_cuda:
-                        non_cuda_tensors += 1
-                    inp.append(tensor)
-        random.shuffle(inp)
+                    elif len(line) > CHUNK_LEN:
+                        idx = 0
+                        while idx < len(line):
+                            if idx + CHUNK_LEN < len(line):
+                                chunk = line[idx:idx+CHUNK_LEN]
+                            else:
+                                chunk = line[idx:]
+                            tensor = char_tensor(chunk)
+                            tensor.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+                            if not tensor.is_cuda:
+                                non_cuda_tensors += 1
+                            data.append(tensor)
+                            idx += CHUNK_LEN
+                    else:
+                        tensor = char_tensor(line)
+                        tensor.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+                        if not tensor.is_cuda:
+                            non_cuda_tensors += 1
+                        data.append(tensor)
+        random.shuffle(data)
         print(f'Non-cuda tensors in dataset: {non_cuda_tensors}')
-        self.inp = inp
+        self.data = data
     def random_training_set(self):
-        if self.batch_index + self.batch_size >= len(self.inp):
-            return self.inp[self.batch_index:]
+        if self.batch_index + self.batch_size >= len(self.data):
+            return self.data[self.batch_index:]
             self.batch_index = 0
         else:
-            return self.inp[self.batch_index:self.batch_index + self.batch_size]
+            return self.data[self.batch_index:self.batch_index + self.batch_size]
             self.batch_index += self.batch_size
 
 test_data = [

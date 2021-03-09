@@ -1,7 +1,8 @@
 # this file assumes the data is already downloaded and in the directory ../data
 
 import os
-from data_handler import DATA_DIR
+
+DATA_DIR = "../data" # Where the training data is stored
 
 vocab = set()
 chvocab = set()
@@ -17,10 +18,11 @@ for i, file in enumerate(file_list):
     vocab.update(f_vocab)
     print("{}/{} Added {} characters to vocab from {}".format(i+1, len(file_list), len(vocab) - currlen, file))
 
-# vocab.remove('\n')
-# vocab.remove(' ')
+voc_list = list(vocab)
+voc_list.insert(0, '\u2400')
+voc_string = ''.join(voc_list)
 
 with open('./vocab.txt', 'w+') as f:
-  f.write(''.join(list(vocab)))
+  f.write(voc_string)
 
 print("{} total characters in vocab".format(len(vocab)))

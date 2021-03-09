@@ -8,19 +8,18 @@ import torch
 import torch.nn as nn
 
 from Model import Model
-from data_handler import random_training_set
+from data_handler import TrainData
 
 class ModelRunner:
-    """
-    This is our project's main class.
-    """
     def __init__(self, model=Model()):
+        model.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+        if model.device != 'cuda':
+            print("Model not initialized as cuda")
         self.model = model
 
     @classmethod
     def load_training_data(cls):
-        # see get_data.sh for our code that downloads data
-        return []
+        return TrainData()
 
     @classmethod
     def load_test_data(cls, fname):
@@ -38,7 +37,7 @@ class ModelRunner:
             for p in preds:
                 f.write('{}\n'.format(p))
 
-    def run_train(self, data, work_dir):
+    def run_train(self, train_data, work_dir):
         optim = torch.optim.Adam(self.model.parameters(), lr=0.0005)
         criterion = nn.CrossEntropyLoss()
         start = time.time()
@@ -47,8 +46,8 @@ class ModelRunner:
 
         eps = 1500
         for epoch in range(1, eps + 1):
-            inp, target = random_training_set()
-            loss = self.model.train(inp, target, criterion, optim)
+            inp = train_data.random_training_set()
+            loss = self.model.train(inp, criterion, optim)
             if True: #epoch % 60 == 0:
                 print('[%s (%d %d%%) %.4f]' % (time_since(start), epoch, epoch / eps * 100, loss), end=' ')
                 print("Accuracy: {}%".format(self.model.evaluate() * 100))

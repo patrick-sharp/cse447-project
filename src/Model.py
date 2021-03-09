@@ -1,5 +1,6 @@
 import string
 
+from tqdm import tqdm
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -31,16 +32,21 @@ class Model(nn.Module):
 
     def init_hidden(self):
         return Variable(torch.zeros(self.n_layers, 1, self.hidden_size))
-    
-    def train(self, inp, target, criterion, optim,):
+
+    def train(self, inp, criterion, optim,):
         hidden = self.init_hidden()
         self.zero_grad()
         loss = 0
-        for c in range(CHUNK_LEN):
-            output, hidden = self(inp[c], hidden)
-            '''unsqueeze() is used to add dimension to the tensor'''
-            loss += criterion(output, target[c].unsqueeze(dim=0))
+        total_items = 0
+        for line in tqdm(inp):
+            total_items += len(line)
+            for c in range(len(line) - 1):
+                output, hidden = self(line[c], hidden)
+                target = line[c + 1]
+                # unsqueeze() is used to add dimension to the tensor
+                loss += criterion(output, target.unsqueeze(dim=0))
         # Back propagation
+        print("Updating weights")
         loss.backward()
         optim.step()
         return loss.item() / CHUNK_LEN

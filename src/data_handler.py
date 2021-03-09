@@ -1,6 +1,7 @@
 import os
 import random
 
+from tqdm import tqdm
 import torch
 from torch.autograd import Variable
 
@@ -21,31 +22,59 @@ def char_tensor(s: str):
     return Variable(tensor)
 
 # Update to random_chunk function to get a random chunk from a random file
-def random_chunk():
-    # generates a list of files in the training directory and chooses one randomly
-    file_list = os.listdir(DATA_DIR)
-    file_name = file_list[random.randint(0, len(file_list) -1)]
-    file_raw = open(os.path.join(DATA_DIR, file_name), 'r')
+# def random_chunk():
+#     # generates a list of files in the training directory and chooses one randomly
+#     file_list = os.listdir(DATA_DIR)
+#     file_name = file_list[random.randint(0, len(file_list) -1)]
+#     file_raw = open(os.path.join(DATA_DIR, file_name), 'r')
     
-    # reads the file into a string and then chooses a random chunk of that string to return
-    file = file_raw.read()
-    while len(file) < CHUNK_LEN:
-        file_name = file_list[random.randint(0, len(file_list) -1)]
-        file_raw = open(os.path.join(DATA_DIR, file_name), 'r')
-        file = file_raw.read()
+#     # reads the file into a string and then chooses a random chunk of that string to return
+#     file = file_raw.read()
+#     while len(file) < CHUNK_LEN:
+#         file_name = file_list[random.randint(0, len(file_list) -1)]
+#         file_raw = open(os.path.join(DATA_DIR, file_name), 'r')
+#         file = file_raw.read()
 
-    start_index = random.randint(0, len(file) - (CHUNK_LEN + 1))
-    end_index = start_index + CHUNK_LEN + 1
-    ret = file[start_index:end_index]
-    file_raw.close()
-    return ret
+#     start_index = random.randint(0, len(file) - (CHUNK_LEN + 1))
+#     end_index = start_index + CHUNK_LEN + 1
+#     ret = file[start_index:end_index]
+#     file_raw.close()
+#     return ret
 
 # Finally we assemble a pair of input and target tensors for training, from a random chunk. The input will be all characters up to the end, and the target will be all characters from the first. So if our chunk is "abc" the input will correspond to "ab" while the target is "bc".
-def random_training_set():    
-    chunk = random_chunk()
-    inp = char_tensor(chunk[:-1])
-    target = char_tensor(chunk[1:])
-    return inp, target
+# def random_training_set():    
+#     chunk = random_chunk()
+#     inp = char_tensor(chunk[:-1])
+#     target = char_tensor(chunk[1:])
+#     return inp, target
+
+class TrainData():
+    def __init__(self, batch_size=2000):    
+        self.batch_index = 0
+        self.batch_size = batch_size
+        inp = []
+        file_list = os.listdir(DATA_DIR)
+        for filename in tqdm(file_list):
+            with open(os.path.join(DATA_DIR, filename), 'r') as f:
+                for line in f:
+                    line = line.strip('\n')
+                    if len(line) <= 1:
+                        continue
+                    tensor = char_tensor(line)
+                    tensor.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+                    if tensor.device != 'cuda':
+                        print("Tensor not initialized as cuda")
+                    inp.append(tensor)
+        random.shuffle(inp)
+        print(inp.device)
+        self.inp = inp
+    def random_training_set(self):
+        if self.batch_index + self.batch_size >= len(self.inp):
+            return self.inp[self.batch_index:]
+            self.batch_index = 0
+        else:
+            return self.inp[self.batch_index:self.batch_index + self.batch_size]
+            self.batch_index += self.batch_size
 
 test_data = [
     ('Happ', 'y'),

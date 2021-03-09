@@ -13,8 +13,9 @@ from data_handler import TrainData
 class ModelRunner:
     def __init__(self, model=Model()):
         model.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
-        if model.device != 'cuda':
-            print("Model not initialized as cuda")
+        for param in model.parameters:
+            if not param.is_cuda:
+                print("Model not initialized as cuda")
         self.model = model
 
     @classmethod

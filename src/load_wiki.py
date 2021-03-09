@@ -26,9 +26,9 @@ languages = ['zh', 'zh-yue', 'en', 'it', 'de', 'ja',
 trans_lang = ['zh-tw', 'zh-cn', 'en', 'it', 'de', 'ja',
             'ru', 'es', 'fr', 'no', 'nl', 'da', 'sv']
 
-wip2language = {'zh': 'chinese (traditional)', 'zh-yue': 'chinese (simplified)', 
+wip2language = {'zh': 'Chinese (traditional)', 'zh-yue': 'Chinese (simplified)', 
                 'en': 'English', 'it' : 'Italian', 'de': 'German', 'ja': 'Japanese',
-                'ru': 'Russian', 'es': 'Spanish', 'fr': 'French', 'no': 'Norwegan', 
+                'ru': 'Russian', 'es': 'Spanish', 'fr': 'French', 'no': 'Norwegian', 
                 'nl' : 'Dutch', 'da': 'Danish', 'sv': 'Swedish'}
 
 topics = ['International Space Station', 'Interplanetary spaceflight',

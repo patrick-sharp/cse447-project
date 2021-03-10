@@ -47,12 +47,15 @@ class ModelRunner:
         loss_avg = 0
 
         eps = 50
-        for epoch in range(1, eps + 1):
-            inp = train_data.random_training_set()
-            loss = self.model.train(inp, criterion, optim)
-            if True: #epoch % 60 == 0:
-                print('[%s (%d %d%%) %.4f]' % (time_since(start), epoch, epoch / eps * 100, loss), end=' ')
-                print("Accuracy: {}%".format(self.model.evaluate() * 100))
+        with open(os.path.join(work_dir, 'train_log.txt'), 'w') as f:
+            for epoch in range(1, eps + 1):
+                inp = train_data.random_training_set()
+                loss = self.model.train(inp, criterion, optim)
+                accuracy = (self.model.evaluate() * 100)
+                epoch_summary = '[%s (%d %d%%) %.4f], Accuracy: %.3f%' % (time_since(start), epoch, epoch / eps * 100, loss, accuracy)
+                print(epoch_summary)
+                f.write(epoch_summary)
+                f.write('\n')
 
     def run_pred(self, data):
         preds = []

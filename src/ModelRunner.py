@@ -46,7 +46,7 @@ class ModelRunner:
         all_losses = []
         loss_avg = 0
 
-        eps = 1500
+        eps = 3
         for epoch in range(1, eps + 1):
             inp = train_data.random_training_set()
             loss = self.model.train(inp, criterion, optim)

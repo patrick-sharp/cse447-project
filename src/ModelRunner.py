@@ -46,7 +46,7 @@ class ModelRunner:
         all_losses = []
         loss_avg = 0
 
-        eps = 50
+        eps = 30
         with open(os.path.join(work_dir, 'train_log.txt'), 'w') as f:
             for epoch in range(1, eps + 1):
                 inp = train_data.random_training_set()

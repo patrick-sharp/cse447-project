@@ -52,7 +52,7 @@ class ModelRunner:
                 inp = train_data.random_training_set()
                 loss = self.model.train(inp, criterion, optim)
                 accuracy = (self.model.evaluate() * 100)
-                epoch_summary = '[%s (%d %d%%) %.4f], Accuracy: %.3f%' % (time_since(start), epoch, epoch / eps * 100, loss, accuracy)
+                epoch_summary = '[%s (%d %d%%) %.4f], Accuracy: %.3f%%' % (time_since(start), epoch, epoch / eps * 100, loss, accuracy)
                 print(epoch_summary)
                 f.write(epoch_summary)
                 f.write('\n')

@@ -64,9 +64,9 @@ class ModelRunner:
     # your code here
     # this particular model has nothing to load, but for demonstration purposes we will load a blank file
     try:
+      # with open(os.path.join(work_dir, 'model.checkpoint.pt'), 'rb') as f:
       with open(os.path.join(work_dir, 'model.checkpoint.pt'), 'rb') as f:
         model = torch.load(f, map_location=DEVICE)
-        print(model.vocab[0:40])
       return ModelRunner(model=model)
     except Exception as exception:
       # if there is no saved model, just spin up a fresh one.

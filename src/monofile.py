@@ -9,9 +9,10 @@ from torch.autograd import Variable
 import torch.nn as nn
 import numpy as np
 
-DATA_DIR = '../data'
+CURR_DIR = os.path.dirname(os.path.realpath(__file__))
+DATA_DIR = os.path.join(CURR_DIR, '../data')
 EMBEDDING_DIM = 300
-EMBEDDINGS_PATH = "./embeddings.txt"
+EMBEDDINGS_PATH = os.path.join(CURR_DIR, "embeddings.txt")
 HIDDEN_SIZE = 2048
 NUM_LAYERS = 2
 CHUNK_LEN = 400
@@ -39,10 +40,10 @@ TEST_DATA = test_data = [
     ('You rem', 'e'),
     ('You remember our vene', 'r'),
     ('You remember our venerabl', 'e'),
-    ('You remember our venerabl hou', 's'),
-    ('You remember our venerabl house, op', 'u'),
-    ('You remember our venerabl house, opulent and im', 'p'),
-    ('You remember our venerabl house, opulent and imperia', 'l'),
+    ('You remember our venerable hou', 's'),
+    ('You remember our venerable house, op', 'u'),
+    ('You remember our venerable house, opulent and im', 'p'),
+    ('You remember our venerable house, opulent and imperia', 'l'),
     ('G', 'a'),
     ('Gaz', 'i'),
     ('Gazin', 'g'),
@@ -77,6 +78,7 @@ TEST_DATA = test_data = [
     ('Monstrous size has no intrinsic merit, unless inordinate exsanguination be considered a virt', 'u'),
     ('Monstrous size has no intrinsic merit, unless inordinate exsanguination be considered a virtu', 'e'),
 ]
+random.seed(447)
 
 def get_vocab():
   vocab = set()
@@ -95,8 +97,8 @@ def get_vocab():
   print("{} total characters in vocab".format(len(vocab)))
   return voc_string
 
-vocab = get_vocab()
-# vocab = 
+with open(os.path.join(CURR_DIR, 'vocab.txt'), 'r') as f:
+  vocab = f.read()
 NUM_CHARACTERS = len(vocab)
 
 def time_since(since):
@@ -128,8 +130,6 @@ class TrainData():
     hundreth = len(file_list) // 100
     tenth = len(file_list) // 10
     for i, filename in enumerate(file_list):
-      if i > 10:
-        break
       if (i+1) % tenth == 0:
         print('|', end='')
       elif (i+1) % hundreth == 0:
@@ -143,12 +143,12 @@ class TrainData():
             idx = 0
             while idx < len(line):
               if idx + CHUNK_LEN < len(line):
-                  chunk = line[idx:idx+CHUNK_LEN]
+                chunk = line[idx:idx+CHUNK_LEN]
               else:
-                  chunk = line[idx:]
+                chunk = line[idx:]
               tensor = char_tensor(chunk)
               if not tensor.is_cuda:
-                  non_cuda_tensors += 1
+                non_cuda_tensors += 1
               data.append(tensor)
               idx += CHUNK_LEN
           else:
@@ -162,11 +162,11 @@ class TrainData():
     self.data = data
   def random_training_set(self):
     if self.batch_index + self.batch_size >= len(self.data):
-      return self.data[self.batch_index:]
       self.batch_index = 0
+      return self.data[self.batch_index:]
     else:
-      return self.data[self.batch_index:self.batch_index + self.batch_size]
       self.batch_index += self.batch_size
+      return self.data[self.batch_index:self.batch_index + self.batch_size]
 
 def get_tensor_embeddings(input_size, embedding_dim, vocab):
   embeddings = {}
@@ -180,6 +180,7 @@ def get_tensor_embeddings(input_size, embedding_dim, vocab):
       embeddings[char] = embedValues
   except:
     pass
+  
   if torch.cuda.is_available():
     tensor_embeddings = torch.normal(0,1,(input_size, embedding_dim)).cuda('cuda')
   else:
@@ -201,10 +202,10 @@ class Model(nn.Module):
     self.encoder = nn.Embedding.from_pretrained(tensor_embeddings, freeze=False)
     self.gru = nn.GRU(EMBEDDING_DIM, hidden_size, n_layers)
     self.decoder = nn.Linear(hidden_size, output_size)
-  
-  def forward(self, input_str, hidden):
-    input_str = self.encoder(input_str.view(1, -1))
-    output, hidden = self.gru(input_str.view(1, 1, -1), hidden)
+    
+  def forward(self, inputchar, hidden):
+    inputchar = self.encoder(inputchar.view(1, -1))
+    output, hidden = self.gru(inputchar.view(1, 1, -1), hidden)
     output = self.decoder(output.view(1, -1))
     return output, hidden
 
@@ -215,7 +216,6 @@ class Model(nn.Module):
       return Variable(torch.zeros(self.n_layers, 1, self.hidden_size))
 
   def train_step(self, inp, criterion, optim,):
-    hidden = self.init_hidden()
     self.zero_grad()
     loss = 0
     total_items = 0
@@ -224,6 +224,7 @@ class Model(nn.Module):
         print('|', end='')
       elif (i+1) % (BATCH_SIZE // 100) == 0:
         print('-', end='')
+      hidden = self.init_hidden()
       total_items += len(line) - 1
       for c in range(len(line) - 1):
         output, hidden = self(line[c], hidden)
@@ -235,8 +236,8 @@ class Model(nn.Module):
     loss.backward()
     optim.step()
     return loss.item() / total_items
-  
-  def predict(self, history='A', num_top_choices=3, temperature=0.8):
+    
+  def predict(self, history='A'):
     self.eval()
     hidden = self.init_hidden()
     history_input = char_tensor(history)
@@ -247,10 +248,10 @@ class Model(nn.Module):
     inp = history_input[-1]
 
     output, hidden = self(inp, hidden)
-    
-    # Sample from the network as a multinomial distribution
-    output_dist = output.data.view(-1).div(temperature).exp()
-    top_i = torch.multinomial(output_dist, num_top_choices)
+    # print(output, type(output))
+    top_i = []
+    for i in torch.argsort(output[0])[-3:]:
+      top_i.append(i.item())
     
     # Add predicted character to string and use as next input
     predicted_chars = []
@@ -258,7 +259,7 @@ class Model(nn.Module):
       predicted_chars.append(self.vocab[i])
     self.train()
     return predicted_chars
-  
+    
   # test data is a tuple of strings. first string is history, next string is correct char
   def evaluate(self, test_data=test_data):
     total = len(test_data)
@@ -270,7 +271,6 @@ class Model(nn.Module):
     return correct / total
 
 def run_train(model, train_data, work_dir):
-  print(DEVICE)
   model.to(DEVICE)
   for param in model.parameters():
     if not param.is_cuda:
@@ -300,9 +300,3 @@ def run_train(model, train_data, work_dir):
   for history, next_char in test_data:
     preds = model.predict(history)
     print(next_char, preds, history)
-
-if __name__ == '__main__':
-  print('Loading data')
-  train_data = TrainData()
-  print('Initializing model')
-  run_train(Model(), train_data, '.')

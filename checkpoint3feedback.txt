@@ -1,0 +1,47 @@
+Your program got Success rate: 0.16151515151515153 for language 1 
+          Previously, you got 0.09444444444444444 for language 1 
+          Your program took 574s to execute 
+          Previously, your program took 1314.0s to execute 
+           
+Your program got Success rate: 0.14909973700182075 for language 2 
+          Previously, you got 0.10347966821768156 for language 2 
+          Your program took 514s to execute 
+          Previously, your program took 1224.0s to execute 
+
+Your program got Success rate: 0.15417256011315417 for language 3 
+          Previously, you got 0.09456455849666599 for language 3 
+          Your program took 534s to execute 
+          Previously, your program took 1290.0s to execute 
+          
+Your program got Success rate: 0.16261719931444701 for language 4 
+          Previously, you got 0.0931545518701482 for language 4 
+          Your program took 592s to execute 
+          Previously, your program took 653.0s to execute 
+
+Your program got Success rate: 0.14800605754669358 for language 5 
+          Previously, you got 0.09177183240787481 for language 5 
+          Your program took 547s to execute 
+          Previously, your program took 598.0s to execute
+
+Your program got Success rate: 0.010532774312301872 for language 6 
+          Previously, you got 0.0022497187851518562 for language 6 
+          Your program took 213s to execute 
+          Previously, your program took 232.0s to execute 
+
+Your program got Success rate: 0.006840923014090259 for language 7 
+          Previously, you got 0.02001225239942822 for language 7 
+          Your program took 233s to execute 
+          Previously, your program took 259.0s to execute 
+
+Your program got Success rate: 0.0958834833619905 for language 8 
+          Previously, you got 0.00960857691918681 for language 8 
+          Your program took 521s to execute 
+          Previously, your program took 592.0s to execute 
+
+Your program got Success rate: 0.023523316062176166 for language 9 
+          Previously, you got 0.0061139896373057 for language 9 
+          Your program took 162s to execute 
+          Previously, your program took 218.0s to execute 
+
+Summary: your program got 0.101 (prev 0.057) average accuracy and ran in 432.222s (prev 708.889) average time.
+Your program successfully worked for 9/9 languages.

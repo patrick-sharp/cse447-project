@@ -5,9 +5,6 @@ import os
 DATA_DIR = "../data" # Where the training data is stored
 
 vocab = set()
-chvocab = set()
-
-large = set()
 
 file_list = os.listdir(DATA_DIR)
 for i, file in enumerate(file_list):

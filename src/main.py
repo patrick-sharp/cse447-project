@@ -4,6 +4,7 @@ import random
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 from ModelRunner import ModelRunner
+from monofile import Model
 
 if __name__ == '__main__':
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
